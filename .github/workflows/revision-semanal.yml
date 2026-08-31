@@ -1,0 +1,41 @@
+# Revisión automática de la web. La ejecuta GitHub en sus servidores: no hace
+# falta tener el ordenador encendido ni hacer nada.
+#
+# Comprueba que todas las páginas sigan respondiendo y que las categorías de
+# superventas de Amazon sigan existiendo (Amazon devuelve 200 aunque no existan,
+# así que hay que mirar el contenido).
+#
+# Si algo falla, la ejecución sale en rojo y GitHub manda un correo al dueño del
+# repositorio. No hay que configurar nada para recibir ese aviso.
+#
+# También se puede lanzar a mano desde la pestaña Actions del repositorio,
+# botón "Run workflow".
+
+name: Revisión semanal
+
+on:
+  schedule:
+    # Todos los lunes a las 07:00 UTC (09:00 en España en horario de verano).
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  revisar:
+    name: Comprobar páginas y categorías de Amazon
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Revisar la web publicada
+        run: python .github/comprobar.py
