@@ -849,3 +849,86 @@ a:focus-visible, button:focus-visible {
 
 /* La rejilla de la sección arranca pegada a la foto, sin banda blanca */
 .cab-seccion-alta + .listado .contenedor { padding-top: 2.4rem; }
+
+/* ============================================================
+   FOTO DE FONDO DE SECCIÓN
+   La foto va DETRÁS de los productos, no encima. Las tarjetas
+   flotan sobre ella con su propio fondo, así siguen legibles.
+   ============================================================ */
+
+.con-fondo {
+  position: relative;
+  padding: 3.5rem 0 4rem;
+  isolation: isolate;
+}
+
+.con-fondo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;   /* la foto se queda quieta al bajar */
+}
+
+.con-fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Velo oscuro: sin él no se lee nada encima de la foto */
+  background: linear-gradient(180deg,
+      rgba(8, 11, 15, .82) 0%, rgba(8, 11, 15, .74) 45%, rgba(8, 11, 15, .88) 100%);
+}
+
+/* En móvil, background-attachment: fixed va mal. Se desactiva. */
+@media (max-width: 46rem) {
+  .con-fondo::before { background-attachment: scroll; }
+}
+
+/* Textos de la sección, ya sobre la foto */
+.con-fondo h1,
+.con-fondo h2 {
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, .6);
+}
+
+.con-fondo h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); margin: 0 0 .5rem; }
+
+.con-fondo .sub,
+.con-fondo .lead-seccion {
+  color: rgba(255, 255, 255, .88);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .7);
+  max-width: 54ch;
+  margin: 0 0 2rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.con-fondo .kicker { margin-bottom: 1rem; }
+
+.con-fondo .ver-mas a { color: #fff; }
+.con-fondo .ver-mas a:hover { border-bottom-color: var(--accent); }
+
+/* Las tarjetas se despegan del fondo con sombra fuerte */
+.con-fondo .tarjetas a {
+  background: var(--bg);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3), 0 18px 50px rgba(0, 0, 0, .35);
+}
+
+.con-fondo .tarjetas a:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .38), 0 26px 70px rgba(0, 0, 0, .45);
+}
+
+/* Secciones encadenadas sin franja blanca entre ellas */
+.con-fondo + .con-fondo { margin-top: 0; }
+
+.seccion-completa .contenedor { padding-top: 1rem; }
+.seccion-completa h2 {
+  font-size: 1.3rem;
+  margin: 2.5rem 0 1.4rem;
+  font-weight: 700;
+}
