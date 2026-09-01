@@ -687,3 +687,99 @@ a:focus-visible, button:focus-visible {
 .mercado-lista a:hover { border-color: var(--accent); transform: translateY(-2px); }
 
 @media (prefers-reduced-motion: reduce) { .mercado-lista a:hover { transform: none; } }
+
+/* ---------- Cabecera de sección con foto ----------
+   La portada era texto sobre blanco y entraba sosa. Cada sección arranca
+   ahora con una banda de foto y el titular encima. */
+
+.cab-seccion {
+  position: relative;
+  min-height: 15rem;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.cab-seccion::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+}
+
+.cab-seccion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      rgba(6, 9, 13, .25) 0%, rgba(6, 9, 13, .55) 55%, rgba(6, 9, 13, .90) 100%);
+}
+
+.cab-seccion-txt {
+  position: relative;
+  z-index: 1;
+  max-width: 68rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.6rem;
+  color: #fff;
+}
+
+.cab-seccion-txt h2 {
+  margin: 0 0 .4rem;
+  font-size: clamp(1.7rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  color: #fff;
+}
+
+.cab-seccion-txt p {
+  margin: 0;
+  max-width: 54ch;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .86);
+}
+
+.listado { padding-top: 0; }
+.listado + .listado { border-top: 0; }
+
+/* ---------- Aviso del carrito en cada ficha ---------- */
+
+.nota-carrito {
+  margin: .9rem 0 .3rem;
+  padding: .8rem 1rem;
+  background: var(--acento-suave, rgba(196, 63, 34, .08));
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: .93rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .nota-carrito { background: rgba(255, 106, 72, .10); }
+}
+
+/* ---------- Más color en las tarjetas ---------- */
+
+.tarjetas a { position: relative; }
+
+.tarjetas a::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .18s ease;
+  z-index: 2;
+}
+
+.tarjetas a:hover::before { opacity: 1; }
+
+.ficha { border-top: 4px solid var(--accent); }
+
+.criterios { border-left: 4px solid var(--accent); }
