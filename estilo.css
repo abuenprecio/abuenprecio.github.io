@@ -933,89 +933,51 @@ a:focus-visible, button:focus-visible {
   font-weight: 700;
 }
 
+
+
+
 /* ============================================================
-   FICHA DE PRODUCTO CON SU PROPIA FOTO DE FONDO
-   Cada producto lleva SU imagen detrás, no una genérica de la
-   sección. El velo oscuro es lo que permite leer encima.
+   FICHAS SOBRE FOTO GENÉRICA DE LA CATEGORÍA
+   Detrás de los recuadros, la foto del tipo de producto.
+   Dentro del recuadro, fondo claro y la foto del producto.
    ============================================================ */
 
-.ficha-con-foto {
-  position: relative;
-  isolation: isolate;
-  padding: 1.8rem;
-  border: 0;
-  border-radius: var(--radio);
-  overflow: hidden;
+.fichas-fondo { padding: 3rem 0 3.5rem; }
+
+.fichas-fondo .prosa { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.fichas-fondo h2 {
   color: #fff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, .6);
+  margin-top: 0;
 }
 
-.ficha-con-foto::before {
-  content: "";
+/* Los recuadros se despegan del fondo con sombra fuerte */
+.fichas-fondo .ficha {
+  border: 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .3), 0 22px 60px rgba(0, 0, 0, .4);
+}
+
+/* La foto del producto, dentro del recuadro */
+.ficha-foto { margin: 0; position: relative; }
+
+.ficha-foto img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.ficha-foto figcaption {
   position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-image: var(--img);
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.02);
-  transition: transform .5s ease;
-}
-
-.ficha-con-foto:hover::before { transform: scale(1.06); }
-
-.ficha-con-foto::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(180deg,
-      rgba(8, 11, 15, .74) 0%, rgba(8, 11, 15, .84) 40%, rgba(8, 11, 15, .93) 100%);
-}
-
-.ficha-con-foto > * { margin-left: 0; margin-right: 0; }
-
-.ficha-con-foto h3 { color: #fff; text-shadow: 0 2px 18px rgba(0, 0, 0, .6); }
-.ficha-con-foto .ficha-para { color: var(--accent); margin-top: 0; }
-.ficha-con-foto h4 { color: rgba(255, 255, 255, .65); }
-.ficha-con-foto ul,
-.ficha-con-foto .veredicto { color: rgba(255, 255, 255, .93); }
-.ficha-con-foto .veredicto strong { color: #fff; }
-.ficha-con-foto .nota-precio { color: rgba(255, 255, 255, .6); }
-
-.ficha-con-foto .specs div { border-bottom-color: rgba(255, 255, 255, .18); }
-.ficha-con-foto .specs dt { color: rgba(255, 255, 255, .6); }
-.ficha-con-foto .specs dd { color: #fff; }
-
-.ficha-con-foto .nota-carrito {
-  background: rgba(255, 255, 255, .10);
-  border-left-color: var(--accent);
-  color: rgba(255, 255, 255, .93);
-}
-.ficha-con-foto .nota-carrito strong { color: #fff; }
-
-/* El aviso de imagen orientativa, arriba a la derecha de la ficha */
-.sello-orientativa {
-  position: absolute;
-  top: .85rem;
-  right: .85rem;
-  z-index: 1;
-  background: rgba(8, 11, 15, .7);
-  border: 1px solid rgba(255, 255, 255, .18);
-  color: rgba(255, 255, 255, .82);
-  font-size: .68rem;
+  right: .7rem;
+  bottom: .7rem;
+  background: rgba(13, 16, 21, .82);
+  color: rgba(255, 255, 255, .9);
+  font-size: .7rem;
   letter-spacing: .04em;
   text-transform: uppercase;
   padding: .26rem .6rem;
   border-radius: 6px;
   backdrop-filter: blur(4px);
-}
-
-/* El botón de compra destaca más sobre la foto */
-.ficha-con-foto .cta a {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
-  font-size: 1.02rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ficha-con-foto:hover::before { transform: scale(1.02); }
 }
