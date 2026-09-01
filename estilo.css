@@ -981,3 +981,29 @@ a:focus-visible, button:focus-visible {
   border-radius: 6px;
   backdrop-filter: blur(4px);
 }
+
+/* ---------- Etiqueta del nivel en la ficha ----------
+   EL MEJOR · GAMA MEDIA · EL MEJOR BARATO
+   La gente no quiere elegir entre cientos: quiere que le digan cuál. */
+
+.ficha { position: relative; }
+
+.sello-nivel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: .45rem 1rem;
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: var(--radio) 0 12px 0;
+}
+
+.nivel-top    { background: #b8860b; }   /* dorado: el mejor */
+.nivel-media  { background: var(--accent); }
+.nivel-barato { background: #1f7a4d; }   /* verde: el mejor barato */
+
+.ficha-foto img { filter: brightness(.97); }
