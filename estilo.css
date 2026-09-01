@@ -371,6 +371,42 @@ tbody tr:last-child td { border-bottom: 0; }
 
 .criterios ul { margin: 0; }
 
+.faq { margin: 2.6rem 0; }
+
+.faq h2 { margin: 0 0 1rem; }
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  padding: .95rem 1.2rem;
+  margin-bottom: .6rem;
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: "+";
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.faq-item[open] summary::after { content: "2"; }
+
+.faq-item p { margin: .8rem 0 .2rem; color: var(--texto-suave, inherit); }
+
 .aviso-afiliado {
   background: var(--surface);
   border: 1px solid var(--line);
