@@ -694,11 +694,11 @@ a:focus-visible, button:focus-visible {
 
 .cab-seccion {
   position: relative;
-  min-height: 15rem;
+  min-height: clamp(20rem, 34vw, 30rem);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  margin-bottom: 2rem;
+  margin: 0;
 }
 
 .cab-seccion::before {
@@ -724,27 +724,34 @@ a:focus-visible, button:focus-visible {
   max-width: 68rem;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.5rem 1.6rem;
+  padding: 3rem 1.5rem 2.4rem;
   color: #fff;
 }
 
 .cab-seccion-txt h2 {
   margin: 0 0 .4rem;
-  font-size: clamp(1.7rem, 4.5vw, 2.5rem);
+  font-size: clamp(2rem, 5.5vw, 3.4rem);
   font-weight: 800;
   color: #fff;
+  text-shadow: 0 2px 24px rgba(0,0,0,.5);
 }
 
 .cab-seccion-txt p {
   margin: 0;
   max-width: 54ch;
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
   line-height: 1.55;
-  color: rgba(255, 255, 255, .86);
+  color: rgba(255, 255, 255, .90);
+  text-shadow: 0 1px 12px rgba(0,0,0,.6);
 }
 
-.listado { padding-top: 0; }
+/* Sin huecos blancos: la foto pega con las tarjetas y las secciones se encadenan */
+.listado { padding: 0 0 3rem; }
 .listado + .listado { border-top: 0; }
+.cab-seccion + .contenedor,
+.listado .contenedor { padding-top: 2.2rem; }
+.hero + .confianza { margin-top: 0; }
+.mercado { padding-top: 3rem; }
 
 /* ---------- Aviso del carrito en cada ficha ---------- */
 
@@ -783,3 +790,62 @@ a:focus-visible, button:focus-visible {
 .ficha { border-top: 4px solid var(--accent); }
 
 .criterios { border-left: 4px solid var(--accent); }
+
+/* ---------- Foto en la ficha de producto ----------
+   Imagen ORIENTATIVA: muestra el tipo de producto, no ese modelo exacto.
+   La etiqueta no se quita nunca: sin ella, la foto engaña. */
+
+.ficha { padding: 0; overflow: hidden; }
+
+.ficha-foto { margin: 0; position: relative; }
+
+.ficha-foto img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.ficha-foto figcaption {
+  position: absolute;
+  right: .7rem;
+  bottom: .7rem;
+  background: rgba(13, 16, 21, .82);
+  color: rgba(255, 255, 255, .9);
+  font-size: .72rem;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  padding: .28rem .6rem;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.ficha > :not(.ficha-foto) { margin-left: 1.6rem; margin-right: 1.6rem; }
+.ficha .ficha-para { margin-top: 1.3rem; }
+.ficha > .nota-precio { margin-bottom: 1.5rem; }
+
+/* ---------- Cabecera alta en las páginas de sección ---------- */
+
+.cab-seccion-alta { min-height: clamp(24rem, 42vw, 34rem); }
+
+.cab-seccion-alta h1 {
+  margin: 0 0 .5rem;
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, .55);
+}
+
+.cab-seccion-alta p:not(.kicker) {
+  margin: 0;
+  max-width: 54ch;
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .9);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .6);
+}
+
+.cab-seccion-alta .kicker { margin-bottom: .9rem; }
+
+/* La rejilla de la sección arranca pegada a la foto, sin banda blanca */
+.cab-seccion-alta + .listado .contenedor { padding-top: 2.4rem; }
