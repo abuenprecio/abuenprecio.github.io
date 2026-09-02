@@ -371,6 +371,71 @@ tbody tr:last-child td { border-bottom: 0; }
 
 .criterios ul { margin: 0; }
 
+/* Tarjeta del vídeo del producto. Enlaza a YouTube, NO lo incrusta:
+   incrustar el reproductor traería sus cookies y esta web no tiene ninguna. */
+.video-ficha { margin: 1.6rem 0 2.4rem; }
+
+.video-ficha a {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radio);
+  padding: .9rem 1.1rem .9rem .9rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.video-ficha a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.video-img {
+  position: relative;
+  flex: 0 0 210px;
+  line-height: 0;
+  border-radius: calc(var(--radio) - 4px);
+  overflow: hidden;
+}
+
+.video-img img { width: 100%; height: auto; display: block; }
+
+/* Triángulo de reproducción dibujado con bordes: sin imagen ni fuente extra */
+.video-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 14px 0 14px 24px;
+  border-color: transparent transparent transparent #fff;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .55));
+}
+
+.video-txt { display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+
+.video-txt strong {
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.video-tit { font-weight: 600; line-height: 1.35; }
+
+.video-pie { font-size: .85rem; color: var(--texto-suave, #6b7280); }
+
+@media (max-width: 560px) {
+  .video-ficha a { flex-direction: column; align-items: stretch; }
+  .video-img { flex: none; }
+  .video-txt { gap: .3rem; }
+}
+
 .faq { margin: 2.6rem 0; }
 
 .faq h2 { margin: 0 0 1rem; }
