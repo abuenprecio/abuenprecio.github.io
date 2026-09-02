@@ -1356,3 +1356,145 @@ a:focus-visible, button:focus-visible {
 .portada-alta .confianza p { color: rgba(255, 255, 255, .86); }
 
 .portada-alta .confianza .marca { box-shadow: 0 0 0 2px rgba(255, 255, 255, .22); }
+
+/* ---------- Ficha propia de cada producto ---------- */
+
+.prod-hero { min-height: 18rem; }
+
+.prod-hero .art-hero-txt { justify-content: center; padding-top: 3rem; }
+
+.prod-hero .kicker { margin: 0 0 .6rem; }
+
+.prod-hero h1 { max-width: 24ch; }
+
+.intro-fondo .lead {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin: 0 0 1.6rem;
+}
+
+.prod-foto {
+  margin: 0 0 1.8rem;
+  border-radius: var(--radio);
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+}
+
+.prod-foto img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+
+/* Tarjeta clara sobre la foto: dentro, el texto vuelve a ser oscuro. Si
+   hereda el blanco del fondo, la tabla se queda en blanco sobre blanco. */
+.ficha-tecnica {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  padding: 1.4rem 1.5rem;
+  margin: 0 0 1.8rem;
+  color: var(--ink);
+}
+
+.ficha-tecnica h2 { margin: 0 0 1rem; font-size: 1.2rem; color: var(--ink); }
+
+.ficha-tecnica th {
+  width: 34%;
+  text-align: left;
+  vertical-align: top;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.ficha-tecnica td { color: var(--ink); }
+
+.ficha-tecnica .fuente {
+  margin: 1rem 0 0;
+  font-size: .85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.pros-contras {
+  display: grid;
+  gap: 1.2rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radio);
+  padding: 1.3rem 1.5rem;
+  margin: 0 0 1.8rem;
+  color: var(--ink);
+}
+
+@media (min-width: 40rem) {
+  .pros-contras { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+
+.pros-contras h3 {
+  margin: 0 0 .6rem;
+  font-size: .8rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pros-contras ul { margin: 0; padding-left: 1.2rem; color: var(--ink); }
+
+.pros-contras li { margin-bottom: .45rem; }
+
+.pros-contras .si li::marker { color: var(--si); }
+
+.pros-contras .no li::marker { color: var(--no); }
+
+.comprar { margin: 0 0 .5rem; }
+
+.sin-precio { font-size: .88rem; color: rgba(255, 255, 255, .7); margin: 0 0 1.6rem; }
+
+.volver { font-size: .95rem; color: rgba(255, 255, 255, .88); margin: 0; }
+
+.volver a { color: #ffb4a0; }
+
+/* ---------- REGLA GENERAL: tarjeta clara sobre foto ----------
+   Ya van TRES veces que el texto de una tarjeta clara se queda blanco sobre
+   blanco al ponerla encima de una foto: pasó con la tabla resumen, con los
+   criterios y con los pros y contras de la ficha de producto, donde los
+   puntos aparecían VACÍOS con solo la viñeta.
+
+   En vez de ir arreglándolo tarjeta por tarjeta, aquí se declara de una vez:
+   todo lo que sea una tarjeta clara dentro de una sección con foto vuelve a
+   texto oscuro, incluidos sus párrafos, listas y títulos. Cualquier tarjeta
+   nueva que se añada a la lista queda cubierta. */
+
+.intro-fondo .ficha-tecnica, .intro-fondo .ficha-tecnica *,
+.intro-fondo .pros-contras, .intro-fondo .pros-contras *,
+.intro-fondo .resumen, .intro-fondo .resumen *,
+.intro-fondo .video-ficha, .intro-fondo .video-ficha *,
+.cierre-fondo .criterios, .cierre-fondo .criterios *,
+.cierre-fondo .faq-item, .cierre-fondo .faq-item *,
+.cierre-fondo .aviso-afiliado, .cierre-fondo .aviso-afiliado * {
+  color: var(--ink);
+}
+
+/* Y lo que dentro de esas tarjetas SÍ debe llevar el color de marca */
+.intro-fondo .pros-contras h3,
+.intro-fondo .ficha-tecnica .fuente { color: var(--muted); }
+
+.intro-fondo .video-ficha strong { color: var(--accent); }
+
+.intro-fondo .video-ficha .video-pie { color: var(--muted); }
+
+.intro-fondo .resumen .btn-tabla,
+.intro-fondo .comprar .btn { color: var(--accent-ink); }
+
+/* El distintivo de nivel es una etiqueta, no una banda: en la ficha se
+   estiraba de lado a lado porque hereda el ancho del contenedor. */
+.prod-hero .kicker {
+  display: inline-block;
+  width: auto;
+  align-self: flex-start;
+}
+
+/* Enlace a la ficha propia desde la tarjeta del producto */
+.mas-ficha { margin: .9rem 0 0; font-size: .92rem; }
+
+.mas-ficha a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+.mas-ficha a:hover { text-decoration: underline; }
