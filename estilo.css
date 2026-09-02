@@ -1315,3 +1315,44 @@ a:focus-visible, button:focus-visible {
 @media (min-width: 62rem) {
   .cierre-fondo .prosa { max-width: 52rem; }
 }
+
+/* ---------- Cabecera y franja de confianza: UN SOLO FONDO ----------
+   Antes cada una traía su propia copia de la foto: la cabecera con
+   background-size: cover a su altura y la franja con fondo fijo. Eran dos
+   encuadres distintos de la misma imagen y se veía el corte. Ahora la foto
+   la pone el contenedor una sola vez y las dos van encima. */
+
+.portada-alta {
+  position: relative;
+  isolation: isolate;
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+}
+
+.portada-alta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg,
+      rgba(6, 9, 13, .32) 0%,
+      rgba(6, 9, 13, .58) 42%,
+      rgba(6, 9, 13, .80) 78%,
+      rgba(6, 9, 13, .90) 100%);
+}
+
+/* Dentro del contenedor, la cabecera y la franja no pintan nada de fondo */
+.portada-alta .hero,
+.portada-alta .confianza { background: none; border-bottom: 0; }
+
+.portada-alta .hero::before,
+.portada-alta .hero::after { content: none; }
+
+.portada-alta .confianza ul { padding: 2.4rem 1.5rem 3rem; }
+
+.portada-alta .confianza strong { color: #fff; }
+
+.portada-alta .confianza p { color: rgba(255, 255, 255, .86); }
+
+.portada-alta .confianza .marca { box-shadow: 0 0 0 2px rgba(255, 255, 255, .22); }
