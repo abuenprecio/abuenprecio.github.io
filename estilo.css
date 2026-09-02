@@ -1221,3 +1221,97 @@ a:focus-visible, button:focus-visible {
 
 /* El texto ya no arranca pegado a un título que ahora está arriba */
 .art-hero + .prosa { padding-top: 2.4rem; }
+
+/* ---------- La franja de confianza, sobre la foto de cabecera ----------
+   Antes tenía fondo claro y partía la portada con una banda blanca justo
+   debajo de la cabecera. Ahora continúa la misma foto, así que la parte de
+   arriba de la portada se lee como una sola pieza y no como dos bloques. */
+
+.confianza.con-fondo {
+  background: none;
+  border-bottom: 0;
+  padding: 0;                 /* el aire lo pone el ul, no la sección */
+}
+
+.confianza.con-fondo ul { padding: 2.6rem 1.5rem 3rem; }
+
+.confianza.con-fondo strong { color: #fff; }
+
+/* Sobre foto hace falta más contraste que sobre blanco: el gris de antes
+   cumplía el mínimo en claro y no lo cumpliría aquí. */
+.confianza.con-fondo p { color: rgba(255, 255, 255, .86); }
+
+/* El número va en un círculo del color de marca, que sobre la foto se pierde
+   menos con un borde claro alrededor. */
+.confianza.con-fondo .marca { box-shadow: 0 0 0 2px rgba(255, 255, 255, .22); }
+
+/* ---------- Entradilla y tabla resumen, sobre la foto ----------
+   Iban sobre blanco y dejaban una banda entre la foto de cabecera y la
+   sección de fichas. Ahora continúan la misma foto. El texto pasa a claro:
+   el gris de antes cumplía el contraste sobre blanco y aquí no lo haría. */
+
+.intro-fondo { padding: 2.6rem 0 2.4rem; }
+
+.intro-fondo .prosa { padding-bottom: 0; }
+
+.intro-fondo p,
+.intro-fondo li { color: rgba(255, 255, 255, .92); }
+
+.intro-fondo strong { color: #fff; }
+
+.intro-fondo .meta { color: rgba(255, 255, 255, .72); }
+
+/* La tabla resumen se queda con fondo claro a propósito: es una tarjeta
+   sobre la foto, igual que las fichas, y así se lee sin forzar la vista. */
+.intro-fondo .resumen { background: var(--bg); }
+
+/* Enlaces dentro del texto sobre foto */
+.intro-fondo a:not(.btn):not(.btn-tabla) { color: #ffb4a0; }
+
+/* ⚠️ LA TABLA RESUMEN ES UNA TARJETA CLARA SOBRE LA FOTO, así que dentro de
+   ella el texto vuelve a ser oscuro. Sin esto heredaba el blanco de
+   .intro-fondo y los nombres de los modelos DESAPARECÍAN sobre el fondo
+   blanco de la tabla. La auditoría no lo detectó: comprueba los colores
+   declarados, no los heredados dentro de un bloque con otro fondo. */
+
+.intro-fondo .resumen,
+.intro-fondo .resumen h2,
+.intro-fondo .resumen h3,
+.intro-fondo .resumen p,
+.intro-fondo .resumen li,
+.intro-fondo .resumen th,
+.intro-fondo .resumen td,
+.intro-fondo .resumen strong { color: var(--ink); }
+
+.intro-fondo .resumen .btn-tabla { color: var(--accent-ink); }
+
+/* ---------- Cierre de la guía, también sobre la foto ---------- */
+
+.cierre-fondo { padding: 2.8rem 0 3.4rem; }
+
+.cierre-fondo .prosa { padding-bottom: 0; }
+
+.cierre-fondo > .prosa > p,
+.cierre-fondo > .prosa > li { color: rgba(255, 255, 255, .92); }
+
+/* ⚠️ MISMO CUIDADO QUE CON LA TABLA: los criterios, las preguntas y el aviso
+   son tarjetas CLARAS sobre la foto, así que dentro de ellas el texto vuelve
+   a ser oscuro. Si heredan el blanco, desaparecen. */
+.cierre-fondo .criterios,
+.cierre-fondo .criterios h3,
+.cierre-fondo .criterios li,
+.cierre-fondo .criterios strong,
+.cierre-fondo .faq-item,
+.cierre-fondo .faq-item summary,
+.cierre-fondo .faq-item p,
+.cierre-fondo .aviso-afiliado,
+.cierre-fondo .aviso-afiliado p,
+.cierre-fondo .aviso-afiliado strong { color: var(--ink); }
+
+.cierre-fondo .relacionadas h2 { color: #fff; }
+
+/* Un poco más ancho que el texto corrido: son listas y preguntas, no párrafos
+   largos, y a 44rem quedaban muy estrechas en el centro de la foto. */
+@media (min-width: 62rem) {
+  .cierre-fondo .prosa { max-width: 52rem; }
+}
