@@ -1108,3 +1108,116 @@ a:focus-visible, button:focus-visible {
 .nivel-barato { background: #1f7a4d; }   /* verde: el mejor barato */
 
 .ficha-foto img { filter: brightness(.97); }
+
+/* ---------- Ancho de las fichas sobre la foto de fondo ----------
+   El texto va a 44rem porque es el ancho en el que se lee cómodo, y eso no
+   se toca. Pero las FICHAS heredaban ese mismo ancho, así que sobre la foto
+   de fondo quedaba una tira estrecha en el centro y media pantalla vacía a
+   cada lado. Aquí se ensancha y se ponen en dos columnas: la sección se
+   llena y la foto de detrás se ve como fondo, no como márgenes. */
+
+.fichas-fondo .prosa {
+  max-width: 74rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.7rem;
+  /* stretch, no start: con "start" cada ficha medía lo que midiera su texto
+     y las dos de una fila acababan con distinta altura, dejando un escalón
+     y un hueco de fondo debajo de la más corta. */
+  align-items: stretch;
+}
+
+/* El título de la sección y la tarjeta de vídeo cruzan las dos columnas */
+.fichas-fondo .prosa > h2,
+.fichas-fondo .prosa > .video-ficha,
+.fichas-fondo .prosa > p {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+/* En rejilla, la separación la da el gap: los márgenes sobran y descuadran */
+.fichas-fondo .ficha { margin: 0; }
+
+.fichas-fondo .video-ficha { margin: .4rem 0 .2rem; }
+
+/* Una sola columna en pantallas donde dos quedarían apretadas */
+@media (max-width: 62rem) {
+  .fichas-fondo .prosa {
+    grid-template-columns: 1fr;
+    max-width: 44rem;
+    gap: 1.9rem;
+  }
+}
+
+/* La tabla resumen también se quedaba corta y flotando en medio del blanco */
+.resumen { max-width: 56rem; margin-left: auto; margin-right: auto; }
+
+/* La ficha ocupa toda su celda y empuja el botón abajo, así el pie de las
+   dos fichas de una fila queda a la misma altura. */
+.fichas-fondo .ficha { display: flex; flex-direction: column; }
+
+.fichas-fondo .ficha > *:last-child { margin-bottom: 0; }
+
+/* ---------- Menos blanco entre bloques ----------
+   Entre el final del texto y la sección de la foto había casi 8 rem de
+   blanco: la página parecía a rayas y las fotos de fondo se leían como
+   franjas sueltas en vez de como un fondo continuo. */
+
+.prosa:has(+ .con-fondo) { padding-bottom: 1.8rem; }
+
+.con-fondo + .prosa { padding-top: 2.6rem; }
+
+.con-fondo { padding: 3rem 0 3.2rem; }
+
+/* ---------- Título sobre la foto de cabecera ----------
+   Antes el título iba en una banda blanca entre la foto de cabecera y la
+   sección con foto de fondo. La página quedaba a rayas y las fotos se leían
+   como franjas sueltas en vez de como fondo. Ahora el título va encima. */
+
+.art-hero { display: grid; }
+
+.art-hero img,
+.art-hero .art-hero-txt { grid-area: 1 / 1; }
+
+.art-hero img { height: clamp(17rem, 40vw, 27rem); }
+
+.art-hero-txt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 68rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 2.2rem;
+  box-sizing: border-box;
+}
+
+/* Velo por debajo del texto: sin él, un título claro sobre una foto clara
+   no se lee, y eso pasa en cuanto cambias la foto de una guía. */
+.art-hero::after {
+  content: "";
+  grid-area: 1 / 1;
+  background: linear-gradient(180deg,
+      rgba(8, 11, 15, .10) 0%, rgba(8, 11, 15, .55) 45%, rgba(8, 11, 15, .88) 100%);
+}
+
+.art-hero-txt { z-index: 1; }
+
+.art-hero-txt h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  line-height: 1.12;
+  text-wrap: balance;
+  max-width: 20ch;
+}
+
+.art-hero-txt .meta {
+  margin: .7rem 0 0;
+  color: rgba(255, 255, 255, .82);
+  font-size: .95rem;
+}
+
+/* El texto ya no arranca pegado a un título que ahora está arriba */
+.art-hero + .prosa { padding-top: 2.4rem; }
