@@ -349,7 +349,20 @@ code {
   border-radius: var(--radio);
 }
 
-table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+/* ⚠️ FONDO Y COLOR EXPLÍCITOS, SIEMPRE.
+   La tabla era transparente y heredaba el color del contenedor. Dentro de un
+   artículo, que va sobre una foto oscurecida, eso deja texto oscuro sobre
+   fondo oscuro: las celdas desaparecen y solo se leen las que van en negrita.
+   Se veía en la primera tabla que escribimos en un artículo de conceptos.
+   Y ojo: auditar.py da "sin fallos" en este caso, porque comprueba los
+   colores DECLARADOS, no los que se heredan. Esto se mira con los ojos. */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .95rem;
+  background: var(--bg);
+  color: var(--ink);
+}
 
 th, td { text-align: left; padding: .8rem 1rem; border-bottom: 1px solid var(--line); }
 
@@ -1586,3 +1599,37 @@ a:focus-visible, button:focus-visible {
   text-shadow: 0 1px 12px rgba(0, 0, 0, .7);
 }
 .con-fondo .otras-fichas { border-top-color: rgba(255, 255, 255, .18); }
+
+/* ---------- Texto dentro de cualquier tabla ----------
+   ⚠️ REGLA GENERAL, y sustituye a parchear bloque por bloque.
+   Desde que toda tabla lleva fondo claro propio, es una tarjeta clara
+   flotando sobre lo que haya detrás. Así que dentro de una tabla el texto
+   vuelve SIEMPRE al color normal, aunque la sección de alrededor lo haya
+   puesto en blanco por ir sobre una foto.
+   Sin esto, la negrita de una celda salía blanca sobre blanco. Es el mismo
+   fallo que ya hubo con la tabla resumen de las guías, solo que al revés, y
+   la auditoría no lo ve porque mira los colores declarados y no los que se
+   heredan. Esto se comprueba MIRANDO la página. */
+.tabla-scroll,
+.tabla-scroll th,
+.tabla-scroll td,
+.tabla-scroll strong,
+.tabla-scroll em,
+.tabla-scroll code { color: var(--ink); }
+
+.tabla-scroll a { color: var(--accent); }
+
+/* El modelo de la tabla resumen ahora enlaza a su ficha, pero se veía igual
+   que antes: negrita oscura y nada más. Se subraya para que se note que se
+   puede pulsar. No se pinta de rojo a propósito: en esa misma fila ya está
+   el botón de Amazon en rojo y dos rojos seguidos ensucian la tabla. */
+.tabla-scroll a:not(.mini-cta):not(.btn):not(.btn-tabla) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(196, 63, 34, .55);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.tabla-scroll a:not(.mini-cta):not(.btn):not(.btn-tabla):hover {
+  text-decoration-color: var(--accent);
+}
