@@ -1498,3 +1498,91 @@ a:focus-visible, button:focus-visible {
 .mas-ficha a { color: var(--accent); font-weight: 600; text-decoration: none; }
 
 .mas-ficha a:hover { text-decoration: underline; }
+
+/* ---------- Índice de fichas técnicas ----------
+   Va en la portada y al final de cada sección. Son las páginas con datos
+   verificados y vídeo, o sea las mejores del sitio, y hasta ahora solo las
+   enlazaba su guía: una entrada cada una. Este bloque es el que las pone a
+   la vista, tanto para quien busca un modelo concreto como para Google. */
+
+.fichas-lista { padding: 3.5rem 0 4rem; border-top: 1px solid var(--line); }
+
+.fichas-lista h2 {
+  margin: 0 0 .4rem;
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  font-weight: 800;
+}
+.fichas-lista .lead-fichas {
+  margin: 0 0 2rem;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.lista-fichas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.lista-fichas a {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  height: 100%;
+  padding: .9rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-decoration: none;
+  /* ⚠️ El color se declara SIEMPRE. Sobre las secciones con foto de fondo,
+     una tarjeta clara que herede el color del contenedor sale blanca sobre
+     blanca: ha pasado ya tres veces en esta web. */
+  color: var(--ink);
+  transition: border-color .15s ease, transform .15s ease;
+}
+.lista-fichas a:hover { border-color: var(--accent); transform: translateY(-2px); }
+.lista-fichas strong { font-size: 1rem; line-height: 1.3; color: var(--ink); }
+.lista-fichas span { font-size: .88rem; line-height: 1.45; color: var(--muted); }
+
+/* El mismo listado, dentro de una ficha, para saltar a sus hermanas. */
+.otras-fichas {
+  margin-top: 2.5rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--line);
+}
+.otras-fichas h3 { margin: 0 0 1rem; font-size: 1.15rem; }
+
+/* El índice sobre foto: el velo oscuro de .con-fondo ya oscurece el fondo,
+   así que la entradilla y las tarjetas tienen que aclararse. Las tarjetas
+   dejan de ser claras y pasan a ser translúcidas oscuras: encima de una
+   foto oscurecida, una tarjeta blanca canta y rompe la pieza. */
+.fichas-lista.con-fondo { border-top: 0; }
+.fichas-lista.con-fondo .lead-fichas {
+  color: rgba(255, 255, 255, .88);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .7);
+}
+.fichas-lista.con-fondo .lead-fichas strong { color: #fff; }
+.fichas-lista.con-fondo .lista-fichas a {
+  background: rgba(14, 18, 24, .62);
+  border-color: rgba(255, 255, 255, .16);
+  backdrop-filter: blur(2px);
+}
+.fichas-lista.con-fondo .lista-fichas a:hover {
+  border-color: var(--accent);
+  background: rgba(14, 18, 24, .78);
+}
+.fichas-lista.con-fondo .lista-fichas strong { color: #fff; }
+.fichas-lista.con-fondo .lista-fichas span { color: rgba(255, 255, 255, .72); }
+
+/* ⚠️ El título de las hermanas iba dentro de una sección con foto, y
+   .con-fondo solo aclara h1 y h2: este h3 salía gris oscuro sobre fondo
+   oscuro, ilegible. No se puede aclarar todos los h3 de .con-fondo porque
+   "A favor" y "En contra" viven dentro de tarjetas claras y se romperían. */
+.con-fondo .otras-fichas h3 {
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .7);
+}
+.con-fondo .otras-fichas { border-top-color: rgba(255, 255, 255, .18); }
