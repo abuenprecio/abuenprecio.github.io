@@ -3,18 +3,33 @@
 """
 Revisión automática de la web publicada. La lanza GitHub todos los lunes.
 
-Comprueba dos cosas que se pueden romper solas, sin que nadie toque nada:
+Comprueba lo que se puede romper **solo**, sin que nadie toque nada, y que
+nadie notaría hasta que se lo encuentra un comprador:
 
 1. Que todas las páginas del sitemap sigan respondiendo.
-2. Que las categorías de superventas de Amazon sigan existiendo.
-
-⚠️ EL PUNTO 2 ES EL IMPORTANTE. Amazon devuelve **HTTP 200 también para
-categorías que no existen**: lo único que las delata es que el título de la
-página dice "undefined". Si Amazon reorganiza sus categorías, los enlaces de la
-portada se quedan muertos apuntando a una página vacía y nada avisa.
+2. Que los vídeos de YouTube que la web enseña sigan existiendo.
+3. Que la web no se haya quedado sin enlaces de producto.
 
 Si algo falla, este script termina con error, GitHub marca la ejecución en rojo
 y manda un correo al dueño del repositorio. Esa es la alarma.
+
+⛔ TRES COSAS QUE ESTE COMPROBADOR **NO** HACE, Y NO ES UN OLVIDO
+──────────────────────────────────────────────────────────────────────────────
+· **No mira si un producto sigue vivo en Amazon.** Se intentó, y Amazon manda
+  su página de bloqueo con código 200 y con texto parecido al de un producto
+  retirado: de 45 productos daba 45 por muertos, y ninguno lo estaba. Un aviso
+  que salta siempre es un aviso que se acaba ignorando. Y esquivar el bloqueo
+  no se hace. Los enlaces muertos se cazan a mano, mirando la página.
+
+· **No detecta si un vídeo se ha vuelto privado.** Solo si desaparece. Para
+  distinguir público de privado haría falta la API de YouTube, o sea meter una
+  credencial en un repositorio público. No compensa.
+
+· **Antes comprobaba las categorías de superventas de Amazon** que enlazaba la
+  portada. Esa sección se quitó de la web, y el comprobador se quedó buscando
+  unos enlaces que ya no existen: **daba fallo todos los lunes avisando de un
+  problema inventado**. Por eso ya no está.
+──────────────────────────────────────────────────────────────────────────────
 """
 import re
 import sys
@@ -29,95 +44,133 @@ AGENTE = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 problemas = []
 
 
-def bajar(url, timeout=25):
+def bajar(url, timeout=25, binario=False):
     req = urllib.request.Request(url, headers={"User-Agent": AGENTE})
     with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.status, r.read().decode("utf-8", "ignore")
+        crudo = r.read()
+        return r.status, crudo if binario else crudo.decode("utf-8", "ignore")
 
 
-def revisar_sitio():
+# --------------------------------------------------------------- 1. páginas
+def revisar_paginas():
     print("\n=== PÁGINAS DE LA WEB ===")
     try:
         _, xml = bajar("%s/sitemap.xml" % DOMINIO)
     except Exception as e:
         problemas.append("No se puede leer el sitemap: %s" % e)
         print("  ERROR leyendo el sitemap: %s" % e)
-        return
+        return []
 
     urls = re.findall(r"<loc>(.*?)</loc>", xml)
     print("  %d páginas en el sitemap" % len(urls))
+    caidas, paginas = 0, []
 
     for url in urls:
         try:
-            estado, _ = bajar(url, timeout=20)
+            estado, html = bajar(url, timeout=20)
             if estado != 200:
                 problemas.append("%s responde %s" % (url, estado))
-                print("  CAÍDA  %-58s %s" % (url.replace(DOMINIO, ""), estado))
+                print("  CAÍDA  %-56s %s" % (url.replace(DOMINIO, ""), estado))
+                caidas += 1
+            else:
+                paginas.append((url, html))
         except Exception as e:
             problemas.append("%s no responde: %s" % (url, e))
-            print("  CAÍDA  %-58s %s" % (url.replace(DOMINIO, ""), e))
+            print("  CAÍDA  %-56s %s" % (url.replace(DOMINIO, ""), e))
+            caidas += 1
 
-    if not problemas:
-        print("  Todas las páginas responden correctamente.")
+    if not caidas:
+        print("  Todas responden correctamente.")
+    return paginas
 
 
-def revisar_categorias_amazon():
-    """Lee las categorías que la portada enlaza y comprueba que sigan vivas."""
-    print("\n=== CATEGORÍAS DE SUPERVENTAS DE AMAZON ===")
-    try:
-        _, portada = bajar(DOMINIO)
-    except Exception as e:
-        problemas.append("No se puede leer la portada: %s" % e)
+# ---------------------------------------------------------------- 2. vídeos
+def revisar_videos(paginas):
+    """¿Siguen existiendo los vídeos que la web enseña?
+
+    Se mira la MINIATURA (`img.youtube.com/vi/<id>/hqdefault.jpg`), que es
+    pública y no gasta cuota: si el vídeo ya no existe devuelve 404.
+
+    ⚠️ Se probó primero con oEmbed y **no vale**: devuelve 401 para cualquier
+    vídeo que tenga la inserción desactivada, aunque sea público. Los diez
+    primeros nuestros dieron 401 estando públicos, y habría sido un aviso falso
+    diez veces seguidas.
+    """
+    print("\n=== VÍDEOS DE YOUTUBE ===")
+    ids = set()
+    for _, html in paginas:
+        ids.update(re.findall(r"youtube\.com/watch\?v=([\w-]{11})", html))
+        ids.update(re.findall(r"youtu\.be/([\w-]{11})", html))
+    if not ids:
+        print("  La web no enlaza ningún vídeo todavía.")
         return
 
-    cats = sorted(set(re.findall(r"amazon\.[a-z.]+/gp/bestsellers/([\w-]+)/", portada)))
-    if not cats:
-        problemas.append("La portada no enlaza ninguna lista de superventas. "
-                         "¿Se ha roto el generador?")
-        print("  NINGUNA categoría enlazada en la portada.")
-        return
-
-    print("  %d categorías enlazadas desde la portada" % len(cats))
-    bloqueos = 0
-
-    for cat in cats:
-        url = "https://www.amazon.es/gp/bestsellers/%s/" % cat
+    print("  %d vídeos enlazados desde la web" % len(ids))
+    for vid in sorted(ids):
+        url = "https://img.youtube.com/vi/%s/hqdefault.jpg" % vid
         try:
-            _, html = bajar(url, timeout=30)
+            estado, datos = bajar(url, timeout=20, binario=True)
+            # YouTube devuelve una imagen gris de 120x90 cuando el vídeo no
+            # está: pesa muy poco. La de un vídeo real pasa de 10 KB.
+            if estado == 200 and len(datos) > 5000:
+                print("  OK     %s" % vid)
+            else:
+                problemas.append(
+                    "El vídeo %s ya no está en YouTube, pero la web lo sigue "
+                    "enseñando." % vid)
+                print("  ROTO   %s (miniatura de %d bytes)" % (vid, len(datos)))
         except urllib.error.HTTPError as e:
-            # Amazon bloquea a veces las IP de los servidores de GitHub. Eso no
-            # significa que la categoría esté mal, así que no cuenta como fallo.
-            bloqueos += 1
-            print("  ?      %-28s Amazon bloqueó la petición (%s)" % (cat, e.code))
-            continue
+            if e.code == 404:
+                problemas.append(
+                    "El vídeo %s ya no está en YouTube, pero la web lo sigue "
+                    "enseñando." % vid)
+                print("  ROTO   %s (404)" % vid)
+            else:
+                print("  ?      %s no comprobable (%s)" % (vid, e.code))
         except Exception as e:
-            bloqueos += 1
-            print("  ?      %-28s no comprobable (%s)" % (cat, e))
-            continue
+            print("  ?      %s no comprobable (%s)" % (vid, e))
 
-        m = re.search(r"<title>(.*?)</title>", html, re.S)
-        titulo = re.sub(r"\s+", " ", m.group(1)).strip() if m else ""
-        nombre = re.search(r"populares en\s+(.+?)(?:\s*$|\s*\|)", titulo)
-        nombre = nombre.group(1).strip() if nombre else ""
 
-        if not nombre or nombre.lower().startswith("undefined"):
-            problemas.append(
-                "La categoría de Amazon '%s' ya no existe: responde 200 pero el título "
-                "dice 'undefined'. El enlace de la portada está muerto. "
-                "Quítala de datos/mercado.json." % cat)
-            print("  MUERTA %-28s (200 pero 'undefined')" % cat)
-        else:
-            print("  OK     %-28s %s" % (cat, nombre))
+# --------------------------------------------------- 3. enlaces de producto
+def revisar_enlaces_producto(paginas):
+    """Que la web no se haya quedado sin enlaces de afiliado.
 
-    if bloqueos == len(cats):
-        print("\n  Amazon ha bloqueado todas las peticiones desde este servidor.")
-        print("  No es un fallo de la web: se comprobará en la siguiente ejecución.")
+    No se comprueba producto por producto contra Amazon (ver la cabecera). Lo
+    que sí se comprueba es que el generador no haya dejado la web sin enlaces,
+    que es un fallo silencioso y carísimo: la web seguiría pareciendo normal y
+    no ganaría un céntimo.
+    """
+    print("\n=== ENLACES DE PRODUCTO ===")
+    asins, con_tag = set(), 0
+    for _, html in paginas:
+        for m in re.finditer(r"amazon\.[a-z.]+/dp/([A-Z0-9]{10})[^\"'<> ]*", html):
+            asins.add(m.group(1))
+            if "tag=" in m.group(0):
+                con_tag += 1
+
+    if not asins:
+        problemas.append(
+            "La web no enlaza NINGÚN producto de Amazon. O se ha roto el "
+            "generador, o se publicó una versión vacía.")
+        print("  NINGÚN enlace de producto. Esto es grave.")
+        return
+
+    print("  %d productos distintos enlazados" % len(asins))
+    if con_tag == 0:
+        problemas.append(
+            "Ningún enlace de Amazon lleva la etiqueta de afiliado (tag=). "
+            "Las ventas no se estarían contando.")
+        print("  NINGÚN enlace lleva tag de afiliado. Esto es grave.")
+    else:
+        print("  %d enlaces con etiqueta de afiliado" % con_tag)
 
 
 def main():
     print("Revisión semanal de %s" % DOMINIO)
-    revisar_sitio()
-    revisar_categorias_amazon()
+    paginas = revisar_paginas()
+    if paginas:
+        revisar_videos(paginas)
+        revisar_enlaces_producto(paginas)
 
     print("\n" + "=" * 66)
     if problemas:
