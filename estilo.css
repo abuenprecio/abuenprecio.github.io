@@ -1633,3 +1633,30 @@ a:focus-visible, button:focus-visible {
 .tabla-scroll a:not(.mini-cta):not(.btn):not(.btn-tabla):hover {
   text-decoration-color: var(--accent);
 }
+
+/* ---------- Botón de comprar de arriba ----------
+   Va justo después del veredicto. Antes el único enlace a Amazon estaba al
+   70-80 % del documento: había que bajarse media página para encontrarlo. */
+.comprar-arriba {
+  margin: 1.4rem 0 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem 1rem;
+}
+.comprar-arriba .cta-nota {
+  font-size: .86rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, .72);
+}
+/* Fuera de una sección con foto, la nota tiene que oscurecerse o desaparece. */
+.prosa:not(.con-fondo .prosa) .comprar-arriba .cta-nota { color: var(--muted); }
+
+/* En móvil la cabecera de una ficha reservaba 18 rem aunque el título ocupara
+   la mitad: ese hueco muerto empujaba el botón de comprar fuera de pantalla.
+   En pantallas anchas se deja como estaba, que ahí la foto sí luce. */
+@media (max-width: 46rem) {
+  .prod-hero { min-height: 12rem; }
+  .prod-hero .art-hero-txt { padding-top: 1.6rem; padding-bottom: 1.4rem; }
+  .art-hero + .prosa { padding-top: 1.6rem; }
+}
